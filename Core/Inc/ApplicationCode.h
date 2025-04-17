@@ -7,8 +7,12 @@
 
 #include "LCD_Driver.h"
 #include "stm32f4xx_hal.h"
+#include "GameState.h"
 
+#include <stdbool.h>
 #include <stdio.h>
+
+
 
 
 #ifndef INC_APPLICATIONCODE_H_
@@ -16,6 +20,12 @@
 
 void ApplicationInit(void);
 void LCD_Visual_Demo(void);
+
+void startGame(void);
+void playGame(void);
+void endGame(void);
+void printHomeScreen(void);
+
 
 #if (COMPILE_TOUCH_FUNCTIONS == 1)
 void LCD_Touch_Polling_Demo(void);

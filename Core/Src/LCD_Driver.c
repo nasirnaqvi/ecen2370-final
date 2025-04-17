@@ -236,6 +236,15 @@ void LCD_Draw_Vertical_Line(uint16_t x, uint16_t y, uint16_t len, uint16_t color
   }
 }
 
+void LCD_Draw_Horizontal_Line(uint16_t x, uint16_t y, uint16_t len, uint16_t color)
+{
+  for (uint16_t i = 0; i < len; i++)
+  {
+	  LCD_Draw_Pixel(i+x, y, color);
+  }
+}
+
+
 void LCD_Clear(uint8_t LayerIndex, uint16_t Color)
 {
 	if (LayerIndex == 0){
@@ -331,6 +340,58 @@ void visualDemo(void)
 	LCD_DisplayChar(140,160,'d');
 }
 
+void LCD_DrawString(uint16_t Xpos, uint16_t Ypos, const char *str) {
+    while (*str) {
+        LCD_DisplayChar(Xpos, Ypos, *str++);
+        Xpos += 12;
+    }
+}
+
+/**
+  * @brief  This function prints the home screen with One Player and Two Player options.
+  * @retval None
+  */
+void printSelectModeScreen(void) {
+    LCD_Clear(0, LCD_COLOR_BLACK);
+    LCD_SetFont(&Font16x24);
+    LCD_SetTextColor(LCD_COLOR_WHITE);
+
+    LCD_Draw_Vertical_Line(LCD_PIXEL_WIDTH / 2, 0, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
+
+    LCD_DrawString(20, LCD_PIXEL_HEIGHT / 2 - 20, "One");
+    LCD_DrawString(20, LCD_PIXEL_HEIGHT / 2, "Player");
+
+
+    LCD_DrawString((LCD_PIXEL_WIDTH / 2) + 20, LCD_PIXEL_HEIGHT / 2 - 20, "Two");
+    LCD_DrawString((LCD_PIXEL_WIDTH / 2) + 20, LCD_PIXEL_HEIGHT / 2, "Player");
+}
+
+void LCD_DrawBoard(void){
+    LCD_Clear(0, LCD_COLOR_BLACK);
+
+    LCD_Draw_Vertical_Line(LCD_PIXEL_WIDTH * 1 / 7, 0, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
+    LCD_Draw_Vertical_Line(LCD_PIXEL_WIDTH * 2 / 7, 0, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
+    LCD_Draw_Vertical_Line(LCD_PIXEL_WIDTH * 3 / 7, 0, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
+    LCD_Draw_Vertical_Line(LCD_PIXEL_WIDTH * 4 / 7, 0, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
+    LCD_Draw_Vertical_Line(LCD_PIXEL_WIDTH * 5 / 7, 0, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
+    LCD_Draw_Vertical_Line(LCD_PIXEL_WIDTH * 6 / 7, 0, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
+
+
+    LCD_Draw_Horizontal_Line(0, LCD_PIXEL_HEIGHT - LCD_PIXEL_WIDTH * 1 / 7, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
+//    LCD_Draw_Horizontal_Line(0, LCD_PIXEL_HEIGHT - LCD_PIXEL_WIDTH * 2 / 7, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
+//    LCD_Draw_Horizontal_Line(0, LCD_PIXEL_HEIGHT - LCD_PIXEL_WIDTH * 3 / 7, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
+//    LCD_Draw_Horizontal_Line(0, LCD_PIXEL_HEIGHT - LCD_PIXEL_WIDTH * 4 / 7, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
+//    LCD_Draw_Horizontal_Line(0, LCD_PIXEL_HEIGHT - LCD_PIXEL_WIDTH * 5 / 7, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
+
+
+}
+
+
+
+
+
+
+
 /**
   * @brief  This function is executed in case of error occurrence.
   * @retval None
@@ -357,6 +418,10 @@ void InitializeLCDTouch(void)
 	 for(;;); // Hang code due to error in initialzation
   }
 }
+
+
+
+
 
 STMPE811_State_t returnTouchStateAndLocation(STMPE811_TouchData * touchStruct)
 {

@@ -8,8 +8,7 @@
 #include "ApplicationCode.h"
 
 /* Static variables */
-
-
+extern GameStructure_t game;
 extern void initialise_monitor_handles(void); 
 
 #if COMPILE_TOUCH_FUNCTIONS == 1
@@ -35,8 +34,42 @@ void ApplicationInit(void)
 
 void LCD_Visual_Demo(void)
 {
-	visualDemo();
+//	LCD_WaitForPlayerModeSelect();
+//	visualDemo();
 }
+
+void startGame(void){
+    LCD_Clear(0, LCD_COLOR_BLACK);
+    printSelectModeScreen();
+
+    STMPE811_TouchData touchData;
+
+    while (1) {
+        if (returnTouchStateAndLocation(&touchData) == STMPE811_State_Pressed) {
+            if (touchData.x < LCD_PIXEL_WIDTH / 2) {
+                // Left side touched
+                game.playerMode = ONE_PLAYER_MODE;
+                printf("One Player Mode Selected\n");
+            } else {
+                // Right side touched
+                game.playerMode = TWO_PLAYER_MODE;
+                printf("Two Player Mode Selected\n");
+            }
+            break;
+        }
+    }
+}
+
+void playGame(void){
+	LCD_DrawBoard();
+
+}
+
+void endGame(void){
+
+}
+
+
 
 #if COMPILE_TOUCH_FUNCTIONS == 1
 void LCD_Touch_Polling_Demo(void)
@@ -55,5 +88,8 @@ void LCD_Touch_Polling_Demo(void)
 		}
 	}
 }
+
+
+
 #endif // COMPILE_TOUCH_FUNCTIONS
 

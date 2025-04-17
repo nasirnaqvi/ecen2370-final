@@ -68,6 +68,8 @@ static void MX_I2C3_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+//static uint8_t grid[6][7];
+
 
 /* USER CODE END 0 */
 
@@ -107,10 +109,15 @@ int main(void)
   MX_I2C3_Init();
   /* USER CODE BEGIN 2 */
   ApplicationInit(); // Initializes the LCD functionality
-  LCD_Visual_Demo();
-  HAL_Delay(5000);
+//  LCD_Visual_Demo();
+
+
+  /* Testing demo items */
+  startGame();
+//  printSelectModeScreen();
+  playGame();
   /* USER CODE END 2 */
-#if COMPILE_TOUCH_FUNCTIONS == 1 // This block will need to be deleted
+#if COMPILE_TOUCH_FUNCTIONS == 0 // This block will need to be deleted
   LCD_Touch_Polling_Demo(); // This function Will not return
 #endif
   /* Infinite loop */

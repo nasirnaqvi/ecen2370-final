@@ -12,6 +12,8 @@
 #include "ili9341.h"
 #include "fonts.h"
 #include "stmpe811.h"
+#include "GameState.h"
+#include <stdio.h>
 
 #define COMPILE_TOUCH_FUNCTIONS COMPILE_TOUCH
 #define TOUCH_INTERRUPT_ENABLED COMPILE_TOUCH_INTERRUPT_SUPPORT
@@ -69,6 +71,8 @@ void LCD_Draw_Circle_Fill(uint16_t Xpos, uint16_t Ypos, uint16_t radius, uint16_
 void LCD_Draw_Vertical_Line(uint16_t x, uint16_t y, uint16_t len, uint16_t color);
 void LCD_Clear(uint8_t LayerIndex, uint16_t Color);
 
+void LCD_Draw_Horizontal_Line(uint16_t x, uint16_t y, uint16_t len, uint16_t color);
+
 void LCD_Error_Handler(void);
 
 // Demo using provided functions
@@ -83,6 +87,13 @@ void LCD_Touch_Polling_Demo(void);
 void DetermineTouchPosition(STMPE811_TouchData * touchStruct);
 uint8_t ReadRegisterFromTouchModule(uint8_t RegToRead);
 void WriteDataToTouchModule(uint8_t RegToWrite, uint8_t writeData);
+
+
+// User functions
+
+void printSelectModeScreen(void);
+void LCD_DrawString(uint16_t Xpos, uint16_t Ypos, const char *str);
+void LCD_DrawBoard(void);
 
 #endif // COMPILE_TOUCH_FUNCTIONS
 

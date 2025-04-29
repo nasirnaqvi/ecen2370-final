@@ -56,6 +56,11 @@
 #define  LCD_PIXEL_HEIGHT   ((uint16_t)320)
 #define  LCD_PIXELS		     ((uint32_t)LCD_PIXEL_WIDTH * (uint32_t)LCD_PIXEL_HEIGHT)
 
+#define  DIST_COLS (LCD_PIXEL_WIDTH / 7)
+#define  PUCK_RADIUS_OFFSET 4
+#define  PUCK_RADIUS (DIST_COLS / 2) - PUCK_RADIUS_OFFSET
+
+
 void LTCD__Init(void);
 void LTCD_Layer_Init(uint8_t LayerIndex);
 
@@ -91,9 +96,13 @@ void WriteDataToTouchModule(uint8_t RegToWrite, uint8_t writeData);
 
 // User functions
 
-void printSelectModeScreen(void);
+void LCD_printSelectModeScreen(void);
 void LCD_DrawString(uint16_t Xpos, uint16_t Ypos, const char *str);
 void LCD_DrawBoard(void);
+void LCD_PlacePuck(uint8_t loc);
+void LCD_printEndScreen(const char *str);
+void LCD_terminationScreen(void);
+
 
 #endif // COMPILE_TOUCH_FUNCTIONS
 

@@ -351,7 +351,7 @@ void LCD_DrawString(uint16_t Xpos, uint16_t Ypos, const char *str) {
   * @brief  This function prints the home screen with One Player and Two Player options.
   * @retval None
   */
-void printSelectModeScreen(void) {
+void LCD_printSelectModeScreen(void) {
     LCD_Clear(0, LCD_COLOR_BLACK);
     LCD_SetFont(&Font16x24);
     LCD_SetTextColor(LCD_COLOR_WHITE);
@@ -369,26 +369,81 @@ void printSelectModeScreen(void) {
 void LCD_DrawBoard(void){
     LCD_Clear(0, LCD_COLOR_BLACK);
 
-    LCD_Draw_Vertical_Line(LCD_PIXEL_WIDTH * 1 / 7, 0, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
-    LCD_Draw_Vertical_Line(LCD_PIXEL_WIDTH * 2 / 7, 0, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
-    LCD_Draw_Vertical_Line(LCD_PIXEL_WIDTH * 3 / 7, 0, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
-    LCD_Draw_Vertical_Line(LCD_PIXEL_WIDTH * 4 / 7, 0, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
-    LCD_Draw_Vertical_Line(LCD_PIXEL_WIDTH * 5 / 7, 0, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
-    LCD_Draw_Vertical_Line(LCD_PIXEL_WIDTH * 6 / 7, 0, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
+    for (int row = 0; row < 6; row++) {
+        for (int col = 0; col < 7; col++) {
+            uint8_t cell = game.grid[row][col];
+            uint16_t color;
+
+            switch (cell) {
+                case PLAYER_ONE_TURN:
+                    color = LCD_COLOR_RED;
+                    break;
+                case PLAYER_TWO_TURN:
+                    color = LCD_COLOR_YELLOW;
+                    break;
+                default:
+                    color = LCD_COLOR_WHITE;
+                    break;
+            }
+
+            int x = (col * LCD_PIXEL_WIDTH / 7) + (LCD_PIXEL_WIDTH / 14);   // Center of cell
+            int y = LCD_PIXEL_HEIGHT - ((row+1) * (LCD_PIXEL_WIDTH / 7)) + (LCD_PIXEL_WIDTH / 14); // Adjust based on top offset
+
+            LCD_Draw_Circle_Fill(x, y, PUCK_RADIUS, color);
+        }
+    }
 
 
-    LCD_Draw_Horizontal_Line(0, LCD_PIXEL_HEIGHT - LCD_PIXEL_WIDTH * 1 / 7, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
-//    LCD_Draw_Horizontal_Line(0, LCD_PIXEL_HEIGHT - LCD_PIXEL_WIDTH * 2 / 7, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
-//    LCD_Draw_Horizontal_Line(0, LCD_PIXEL_HEIGHT - LCD_PIXEL_WIDTH * 3 / 7, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
-//    LCD_Draw_Horizontal_Line(0, LCD_PIXEL_HEIGHT - LCD_PIXEL_WIDTH * 4 / 7, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
-//    LCD_Draw_Horizontal_Line(0, LCD_PIXEL_HEIGHT - LCD_PIXEL_WIDTH * 5 / 7, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
+    for (int i = 1; i < 7; i++){
+        LCD_Draw_Vertical_Line(LCD_PIXEL_WIDTH * i / 7, 50, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
 
-
+    }
+    for (int i = 1; i < 6; i++){
+        LCD_Draw_Horizontal_Line(0, LCD_PIXEL_HEIGHT - (LCD_PIXEL_WIDTH * i / 7), LCD_PIXEL_WIDTH, LCD_COLOR_GREY);
+    }
 }
 
+void LCD_PlacePuck(uint8_t loc){
+	LCD_Draw_Circle_Fill(
+	    loc * DIST_COLS - PUCK_RADIUS + PUCK_RADIUS_OFFSET,
+	    50,
+	    PUCK_RADIUS,
+	    (game.turn == PLAYER_ONE_TURN) ? LCD_COLOR_RED : LCD_COLOR_YELLOW
+	);
+}
+void LCD_printEndScreen(const char *str){
+    LCD_Clear(0, LCD_COLOR_BLACK);
+    LCD_SetFont(&Font16x24);
+    LCD_SetTextColor(LCD_COLOR_WHITE);
+
+
+    LCD_DrawString((LCD_PIXEL_WIDTH / 2) - (6 * strlen(str)), 25, str);
+
+    char buffer[32];
+    sprintf(buffer, "P1 Wins:%ld", game.player1wins);
+    LCD_DrawString((LCD_PIXEL_WIDTH / 6), 75, buffer);
+
+    sprintf(buffer, "P2 Wins:%ld", game.player2wins);
+    LCD_DrawString((LCD_PIXEL_WIDTH / 6), 100, buffer);
+
+    sprintf(buffer, "Game Time:%ld", game.playTime);
+    LCD_DrawString((LCD_PIXEL_WIDTH / 6), 125, buffer);
 
 
 
+
+    LCD_Draw_Vertical_Line(LCD_PIXEL_WIDTH / 2, 200, LCD_PIXEL_HEIGHT - 200, LCD_COLOR_GREY);
+
+    LCD_DrawString(30, LCD_PIXEL_HEIGHT / 2 + 100, "Play");
+    LCD_DrawString(30, LCD_PIXEL_HEIGHT / 2 + 120, "Again?");
+
+    LCD_DrawString((LCD_PIXEL_WIDTH / 2) + 30, LCD_PIXEL_HEIGHT / 2 + 100, "Quit");
+}
+
+void LCD_terminationScreen(void){
+    LCD_Clear(0, LCD_COLOR_BLACK);
+    LCD_DrawString((LCD_PIXEL_WIDTH / 2) - (6 * strlen("Ur done.")), 50, "Ur done.");
+}
 
 
 

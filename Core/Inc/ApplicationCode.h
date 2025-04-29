@@ -8,6 +8,7 @@
 #include "LCD_Driver.h"
 #include "stm32f4xx_hal.h"
 #include "GameState.h"
+#include "Scheduler.h"
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -22,9 +23,12 @@ void ApplicationInit(void);
 void LCD_Visual_Demo(void);
 
 void startGame(void);
-void playGame(void);
+void playOnePlayerGame(void);
+void playTwoPlayerGame(void);
 void endGame(void);
 void printHomeScreen(void);
+void placingPuck(void);
+void AIMove(void);
 
 
 #if (COMPILE_TOUCH_FUNCTIONS == 1)

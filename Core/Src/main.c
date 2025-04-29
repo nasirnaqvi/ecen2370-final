@@ -113,18 +113,43 @@ int main(void)
 
 
   /* Testing demo items */
-  startGame();
-//  printSelectModeScreen();
-  playGame();
+
+
+
   /* USER CODE END 2 */
 #if COMPILE_TOUCH_FUNCTIONS == 0 // This block will need to be deleted
   LCD_Touch_Polling_Demo(); // This function Will not return
 #endif
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  uint32_t events = getScheduledEvents();
+  initializeGame();
   while (1)
   {
     /* USER CODE END WHILE */
+	  createNewGame();
+	  startGame();
+	  uint32_t init_time = 0;
+	  uint32_t final_time = 0;
+	  events = getScheduledEvents();
+	  if (events & ONE_PLAYER_GAME){
+		  init_time =  HAL_GetTick();
+		  playOnePlayerGame();
+		  final_time = HAL_GetTick();
+		  game.playTime = (final_time - init_time) / 1000;
+		  endGame();
+		  removeSchedulerEvent(ONE_PLAYER_GAME);
+	  }
+	  else if (events & TWO_PLAYER_GAME){
+		  init_time =  HAL_GetTick();
+		  playTwoPlayerGame();
+		  final_time = HAL_GetTick();
+		  game.playTime = (final_time - init_time) / 1000;
+		  endGame();
+		  removeSchedulerEvent(TWO_PLAYER_GAME);
+	  }
+	  HAL_Delay(500);
+
 
     /* USER CODE BEGIN 3 */
   }
@@ -386,12 +411,16 @@ static void MX_TIM2_Init(void)
   TIM_MasterConfigTypeDef sMasterConfig = {0};
 
   /* USER CODE BEGIN TIM2_Init 1 */
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 0;
+  htim2.Init.Prescaler = 15999;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 4294967295;
+  htim2.Init.Period = 0xFFFFFFFF;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
@@ -583,6 +612,15 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+
+
+
 /* USER CODE END MX_GPIO_Init_2 */
 }
 

@@ -206,6 +206,7 @@ void LTCD__Init(void)
  */
 void LCD_Draw_Pixel(uint16_t x, uint16_t y, uint16_t color)
 {
+	if (x > 239 || y > 319) return;
 	frameBuffer[y*LCD_PIXEL_WIDTH+x] = color;  //You cannot do x*y to set the pixel.
 }
 

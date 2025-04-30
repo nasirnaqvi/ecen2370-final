@@ -17,10 +17,11 @@ static STMPE811_TouchData StaticTouchData;
 
 void ApplicationInit(void)
 {
-	initialise_monitor_handles(); // Allows printf functionality
+//	initialise_monitor_handles(); // Allows printf functionality
     LTCD__Init();
     LTCD_Layer_Init(0);
     LCD_Clear(0,LCD_COLOR_WHITE);
+
 
     #if COMPILE_TOUCH_FUNCTIONS == 1
 	InitializeLCDTouch();
@@ -31,6 +32,7 @@ void ApplicationInit(void)
 
 	#endif // COMPILE_TOUCH_FUNCTIONS
 }
+
 
 void LCD_Visual_Demo(void)
 {
@@ -64,14 +66,14 @@ void playTwoPlayerGame(void) {
     game.playing = true;
     while (game.playing) {
         placingPuck();
+		if (checkForWin(PLAYER_ONE)) break;
+        placingPuck();
+		if (checkForWin(PLAYER_TWO)) break;
     }
 }
 
 
 void playOnePlayerGame(void){
-    uint32_t init_time = 0;
-    uint32_t final_time = 0;
-    init_time =  (HAL_GetTick() / 1000);
     game.playing = true;
     while (game.playing) {
 		placingPuck();
@@ -79,8 +81,6 @@ void playOnePlayerGame(void){
 		AIMove();
 		if (checkForWin(AI_PLAYER)) break;
 	}
-	final_time = (HAL_GetTick() / 1000);
-    game.playTime = final_time - init_time;
 }
 
 
@@ -212,6 +212,19 @@ void placingPuck(void) {
 
 
 void endGame(void) {
+    LCD_Clear(0, LCD_COLOR_BLACK);
+    LCD_SetFont(&Font16x24);
+    LCD_SetTextColor(LCD_COLOR_WHITE);
+
+	LCD_DrawBoard();
+    LCD_DrawString(25, 25, "Game Over!");
+
+	HAL_Delay(5000);
+
+
+
+
+
 	char result[32];
 	if (checkForWin(PLAYER_ONE_TURN)) {
 	    strcpy(result, "Player 1 Wins!");
@@ -256,24 +269,18 @@ void LCD_Touch_Polling_Demo(void)
 	}
 }
 
-
-
 #endif // COMPILE_TOUCH_FUNCTIONS
 
 void EXTI0_IRQHandler(void) {
     HAL_NVIC_DisableIRQ(EXTI0_IRQn);
 	EXTI_HandleTypeDef hexti;
 	hexti.Line = EXTI_LINE_0;
-//    if (game.playerMode == TWO_PLAYER_MODE || (game.playerMode == ONE_PLAYER_MODE && game.turn == HUMAN_PLAYER)){
-		if (!game.allowPlacement) {
-			HAL_EXTI_ClearPending(&hexti, EXTI_TRIGGER_RISING_FALLING);
-			HAL_NVIC_EnableIRQ(EXTI0_IRQn);
-			return;
-		}
 
+	if (game.allowPlacement) {
 		game.allowPlacement = false;
 		game.turn = (game.turn == PLAYER_ONE_TURN) ? PLAYER_TWO_TURN : PLAYER_ONE_TURN;
-//    }
+	}
+
 
     HAL_EXTI_ClearPending(&hexti, EXTI_TRIGGER_RISING_FALLING);
     HAL_NVIC_EnableIRQ(EXTI0_IRQn);

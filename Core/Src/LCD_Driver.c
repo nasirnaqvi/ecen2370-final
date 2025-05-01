@@ -369,11 +369,11 @@ void LCD_printSelectModeScreen(void) {
 
 void LCD_DrawBoard(void){
     LCD_Clear(0, LCD_COLOR_BLACK);
+    uint16_t color;
 
     for (int row = 0; row < 6; row++) {
         for (int col = 0; col < 7; col++) {
             uint8_t cell = game.grid[row][col];
-            uint16_t color;
 
             switch (cell) {
                 case PLAYER_ONE_TURN:
@@ -387,13 +387,12 @@ void LCD_DrawBoard(void){
                     break;
             }
 
-            int x = (col * LCD_PIXEL_WIDTH / 7) + (LCD_PIXEL_WIDTH / 14);   // Center of cell
-            int y = LCD_PIXEL_HEIGHT - ((row+1) * (LCD_PIXEL_WIDTH / 7)) + (LCD_PIXEL_WIDTH / 14); // Adjust based on top offset
+            int x = (col * LCD_PIXEL_WIDTH / 7) + (LCD_PIXEL_WIDTH / 14);
+            int y = LCD_PIXEL_HEIGHT - ((row+1) * (LCD_PIXEL_WIDTH / 7)) + (LCD_PIXEL_WIDTH / 14);
 
             LCD_Draw_Circle_Fill(x, y, PUCK_RADIUS, color);
         }
     }
-
 
     for (int i = 1; i < 7; i++){
         LCD_Draw_Vertical_Line(LCD_PIXEL_WIDTH * i / 7, 50, LCD_PIXEL_HEIGHT, LCD_COLOR_GREY);
@@ -412,6 +411,7 @@ void LCD_PlacePuck(uint8_t loc){
 	    (game.turn == PLAYER_ONE_TURN) ? LCD_COLOR_RED : LCD_COLOR_YELLOW
 	);
 }
+
 void LCD_printEndScreen(const char *str){
     LCD_Clear(0, LCD_COLOR_BLACK);
     LCD_SetFont(&Font16x24);
@@ -431,8 +431,6 @@ void LCD_printEndScreen(const char *str){
     LCD_DrawString((LCD_PIXEL_WIDTH / 6), 125, buffer);
 
 
-
-
     LCD_Draw_Vertical_Line(LCD_PIXEL_WIDTH / 2, 200, LCD_PIXEL_HEIGHT - 200, LCD_COLOR_GREY);
 
     LCD_DrawString(30, LCD_PIXEL_HEIGHT / 2 + 100, "Play");
@@ -445,7 +443,6 @@ void LCD_terminationScreen(void){
     LCD_Clear(0, LCD_COLOR_BLACK);
     LCD_DrawString((LCD_PIXEL_WIDTH / 2) - (6 * strlen("Ur done.")), 50, "Ur done.");
 }
-
 
 
 /**
@@ -474,9 +471,6 @@ void InitializeLCDTouch(void)
 	 for(;;); // Hang code due to error in initialzation
   }
 }
-
-
-
 
 
 STMPE811_State_t returnTouchStateAndLocation(STMPE811_TouchData * touchStruct)

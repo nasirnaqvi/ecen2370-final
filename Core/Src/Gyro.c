@@ -42,7 +42,7 @@ void gyro_init (){
   hspi.Init.CLKPolarity = SPI_POLARITY_HIGH;
   hspi.Init.CLKPhase = SPI_PHASE_2EDGE;
   hspi.Init.NSS = SPI_NSS_SOFT;
-  hspi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32;
   hspi.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -64,8 +64,13 @@ void gyro_printDeviceId() {
 }
 
 void gyro_power() {
-	uint8_t dataToSend = 0x8;
+	uint8_t dataToSend =  0xF;// 0x8;
 	gyro_configRegisters(CTRL_REG1, dataToSend);
+
+	gyro_configRegisters(FIFO_CTRL_REG, 0);
+	gyro_configRegisters(CTRL_REG4, 0b00100000);
+
+
 	printf("Gyro is now powered on\n");
 }
 
@@ -88,7 +93,7 @@ void gyro_configRegisters(uint8_t reg, uint8_t dataToSend) {
 	gyro_disableSlave();
 }
 
-uint16_t gyro_readRegister(uint8_t reg){
+uint8_t gyro_readRegister(uint8_t reg){
 	uint8_t commandToSend = (GYRO_READ | reg);
 	uint16_t receivedData = 0x00;
 
@@ -104,8 +109,10 @@ uint16_t gyro_readRegister(uint8_t reg){
 	return dataReturned;
 }
 
+
 void gyro_verifyHal() {
 	if (gyroHALStatus != HAL_OK) {
+//		while (1);
 	}
 }
 
@@ -117,4 +124,13 @@ void gyro_disableSlave() {
 	HAL_GPIO_WritePin(GPIOC, GPIOC_SPI5_NCS_MEMS, GPIO_PIN_SET);
 }
 
+int16_t gyro_getXAngularRate() {
+	uint16_t xL = gyro_readRegister(OUT_X_L);
+	uint16_t xH = gyro_readRegister(OUT_X_H);
 
+	return (int16_t)(((uint16_t)(xH) << 8) | (uint16_t)(xL));;
+}
+
+int16_t get_filtered_xRate(int16_t bias) {
+    return (int16_t) (gyro_getXAngularRate() - bias);
+}

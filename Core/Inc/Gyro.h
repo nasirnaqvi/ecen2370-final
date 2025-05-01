@@ -57,20 +57,25 @@
 #define GYRO_WRITE (0 << 7)
 #define TESTING_TIMEOUT 0xFFFFF
 
+#define LEFT_TILT_THRESHOLD  -850
+#define RIGHT_TILT_THRESHOLD 850
+#define TILT_COOLDOWN_MS     600
+
+
+
 // Functions
 void gyro_init();
 void gyro_printDeviceId();
 void gyro_power();
 void gyro_getTempPrint();
 void gyro_configRegisters(uint8_t reg, uint8_t dataToSend);
-uint16_t gyro_readRegister(uint8_t reg);
+uint8_t gyro_readRegister(uint8_t reg);
 void gyro_verifyHal();
 void gyro_enableSlave();
 void gyro_disableSlave();
 
 
-
-
+int16_t gyro_getXAngularRate();
 
 
 #endif /* INC_GYRO_H_ */

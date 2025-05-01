@@ -68,8 +68,6 @@ static void MX_I2C3_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-//static uint8_t grid[6][7];
-
 
 /* USER CODE END 0 */
 
@@ -81,6 +79,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
+
 
   /* USER CODE END 1 */
 
@@ -129,8 +128,7 @@ int main(void)
     /* USER CODE END WHILE */
 	  createNewGame();
 	  startGame();
-	  uint32_t init_time = 0;
-	  uint32_t final_time = 0;
+	  uint32_t init_time = 0, final_time = 0;
 	  events = getScheduledEvents();
 	  if (events & ONE_PLAYER_GAME){
 		  init_time =  HAL_GetTick();
@@ -200,7 +198,6 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 }
-
 /**
   * @brief I2C3 Initialization Function
   * @param None

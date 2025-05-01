@@ -15,6 +15,10 @@
 #include <stdio.h>
 
 
+#define USE_GYRO 1
+
+
+
 
 
 #ifndef INC_APPLICATIONCODE_H_

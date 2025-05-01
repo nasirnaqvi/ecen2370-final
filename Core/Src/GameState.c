@@ -72,9 +72,7 @@ bool checkForWin(uint8_t player) {
 bool isBoardFull() {
     for (int row = 0; row < 6; row++) {
         for (int col = 0; col < 7; col++) {
-            if (game.grid[row][col] == EMPTY) {
-                return false;
-            }
+            if (game.grid[row][col] == EMPTY) return false;
         }
     }
     return true;
@@ -91,9 +89,8 @@ int getAvailableRow(uint8_t col){
     if (col >= NUM_COLS || col < 0) return -1;
 
     for (int row = 0; row < NUM_ROWS; row++) {
-        if (game.grid[row][col] == EMPTY) {
-            return row;
-        }
+        if (game.grid[row][col] == EMPTY) return row;
+
     }
     return -1;
 }
@@ -108,5 +105,3 @@ int dropPuck(uint8_t col, uint8_t player) {
 bool isValidMove(uint8_t col){
 	return getAvailableRow(col) != -1;
 }
-
-

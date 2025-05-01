@@ -32,6 +32,10 @@ bool checkForWin(uint8_t player) {
         for (int col = 0; col < 7; col++) {
             if (game.grid[row][col] != player) continue;
 
+
+            // Col is 0 - 6
+            // Row is 0 - 5
+
             // check horizontal
             if (col <= 3 &&
                 game.grid[row][col + 1] == player &&
@@ -41,7 +45,7 @@ bool checkForWin(uint8_t player) {
             }
 
             // check vert
-            if (row <= 2 &&
+            else if (row <= 2 &&
                 game.grid[row + 1][col] == player &&
                 game.grid[row + 2][col] == player &&
                 game.grid[row + 3][col] == player) {
@@ -49,7 +53,7 @@ bool checkForWin(uint8_t player) {
             }
 
             // check diag right
-            if (row <= 2 && col <= 3 &&
+            else if (row <= 2 && col <= 3 &&
                 game.grid[row + 1][col + 1] == player &&
                 game.grid[row + 2][col + 2] == player &&
                 game.grid[row + 3][col + 3] == player) {
@@ -57,7 +61,7 @@ bool checkForWin(uint8_t player) {
             }
 
             // check diag left
-            if (row <= 2 && col >= 3 &&
+            else if (row <= 2 && col >= 3 &&
                 game.grid[row + 1][col - 1] == player &&
                 game.grid[row + 2][col - 2] == player &&
                 game.grid[row + 3][col - 3] == player) {

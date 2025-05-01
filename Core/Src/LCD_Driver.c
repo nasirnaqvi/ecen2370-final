@@ -427,7 +427,7 @@ void LCD_printEndScreen(const char *str){
     sprintf(buffer, "P2 Wins:%ld", game.player2wins);
     LCD_DrawString((LCD_PIXEL_WIDTH / 6), 100, buffer);
 
-    sprintf(buffer, "Game Time:%ld", game.playTime);
+    sprintf(buffer, "Game Time:%lds", game.playTime);
     LCD_DrawString((LCD_PIXEL_WIDTH / 6), 125, buffer);
 
 

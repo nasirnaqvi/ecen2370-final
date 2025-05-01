@@ -99,7 +99,7 @@ void AIMove(void) {
 	for (col = 0; col < NUM_COLS; col++) {
 		row = getAvailableRow(col);
 		if (row == -1) continue;
-		dropPuck(col, AI_PLAYER);
+		game.grid[row][col] = AI_PLAYER;
 		if (checkForWin(AI_PLAYER)) goto finished;
 
 		game.grid[row][col] = EMPTY;
@@ -120,26 +120,26 @@ void AIMove(void) {
 		game.grid[row][col] = EMPTY;
 	}
 
-    for (int r = 0; r < NUM_ROWS; r++) {
-        for (int c = 0; c < NUM_COLS - 1; c++) {
-            if (game.grid[r][c] == HUMAN_PLAYER &&
-                game.grid[r][c+1] == HUMAN_PLAYER) {
 
-                if (c-1 >= 0 && game.grid[r][c-1] == EMPTY) {
-                    int dropCol = c-1;
-                    if (getAvailableRow(dropCol) == r) {
-                        dropPuck(dropCol, AI_PLAYER);
+	//checks two in a row horizontal
+    for (row = 0; row < NUM_ROWS; row++) {
+        for (col = 0; col < NUM_COLS - 1; col++) {
+            if (game.grid[row][col] == HUMAN_PLAYER &&
+                game.grid[row][col+1] == HUMAN_PLAYER) {
+
+                if (col > 0 && game.grid[row][col-1] == EMPTY) {
+                    if (getAvailableRow(col-1) == row) {
+                        dropPuck(col-1, AI_PLAYER);
                         goto finished;
                     }
                 }
 
-                if (c+2 < NUM_COLS && game.grid[r][c+2] == EMPTY) {
-                    int dropCol = c+2;
-                    if (getAvailableRow(dropCol) == r) {
-                        dropPuck(dropCol, AI_PLAYER);
-                        goto finished;
-                    }
-                }
+//                if (col+2 < NUM_COLS && game.grid[row][col+2] == EMPTY) {
+//                    if (getAvailableRow(col+2) == row) {
+//                        dropPuck(col+2, AI_PLAYER);
+//                        goto finished;
+//                    }
+//                }
             }
         }
     }
@@ -158,12 +158,9 @@ void AIMove(void) {
 finished:
 	LCD_DrawBoard();
 
-	if (checkForWin(AI_PLAYER)) {
-		game.playing = false;
-	} else {
-		game.turn = HUMAN_PLAYER;
-		game.allowPlacement = true;
-	}
+	game.turn = HUMAN_PLAYER;
+	game.allowPlacement = true;
+
 }
 
 
@@ -218,18 +215,13 @@ void placingPuck(void) {
             if (row != -1) {
                 LCD_DrawBoard();
 
-                if (checkForWin(currentTurn) || isBoardFull()) {
-                    game.playing = false;
-                    return;
-                }
-
                 game.turn = (currentTurn == PLAYER_ONE_TURN) ? PLAYER_TWO_TURN : PLAYER_ONE_TURN;
-                game.allowPlacement = true;
                 return;
             } else {
                 game.turn = currentTurn;
-                game.allowPlacement = true;
             }
+            game.allowPlacement = true;
+
         }
     }
 }

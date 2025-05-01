@@ -9,6 +9,7 @@
 #include "stm32f4xx_hal.h"
 #include "GameState.h"
 #include "Scheduler.h"
+#include "Gyro.h"
 
 #include <stdbool.h>
 #include <stdio.h>
@@ -29,6 +30,8 @@ void endGame(void);
 void printHomeScreen(void);
 void placingPuck(void);
 void AIMove(void);
+
+void GyroInit(void);
 
 
 #if (COMPILE_TOUCH_FUNCTIONS == 1)

@@ -21,6 +21,8 @@ void ApplicationInit(void)
     LTCD__Init();
     LTCD_Layer_Init(0);
     LCD_Clear(0,LCD_COLOR_WHITE);
+    GyroInit();
+
 
 
     #if COMPILE_TOUCH_FUNCTIONS == 1
@@ -31,6 +33,12 @@ void ApplicationInit(void)
 	StaticTouchData.orientation = STMPE811_Orientation_Portrait_2;
 
 	#endif // COMPILE_TOUCH_FUNCTIONS
+}
+
+void GyroInit(){
+	gyro_init();
+	gyro_power();
+
 }
 
 
